@@ -7,8 +7,12 @@ cursor = conn.cursor()
 
 # Création de la table
 cursor.execute('''
-    CREATE TABLE IF NOT EXISTS objets_trouves
-    (gare TEXT, type TEXT, nature TEXT, date TEXT)
+    CREATE TABLE IF NOT EXISTS objets_trouves(
+        gare TEXT, 
+        type TEXT, 
+        nature TEXT, 
+        date TEXT
+    )
 ''')
 
 # Liste des gares à récupérer
