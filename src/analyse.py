@@ -4,7 +4,7 @@ import plotly.express as px
 import sqlite3
 import streamlit as st
 
-conn = sqlite3.connect('objets_trouves.db')
+conn = sqlite3.connect('../objets_trouves.db')
 query = "SELECT * FROM objets_trouves"
 df = pd.read_sql_query(query, conn)
 
@@ -16,7 +16,7 @@ df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%dT%H:%M:%S%z', utc=True)
 df['year'] = df['date'].dt.year
 df['week'] = df['date'].apply(lambda x: x.week)
 
-
+# Créer un dataframe avec le nombre d'objets trouvés par semaine
 result = df.groupby(['year', 'week', 'type']).count()['gare'].rename('nombre_objets')
 result = result.to_frame()
 result = result.reset_index()
@@ -30,9 +30,6 @@ fig.update_yaxes(title_text='Nombre d\'objets')
 fig.update_layout(height=1000)
 
 # Afficher la figure
-fig.show()
-
-
 st.plotly_chart(fig)
 
 
