@@ -16,7 +16,7 @@ df['date'] = pd.to_datetime(df['date'], format='%Y-%m-%dT%H:%M:%S%z', utc=True)
 df['year'] = df['date'].dt.year
 df['week'] = df['date'].apply(lambda x: x.week)
 
-
+# Créer un dataframe avec le nombre d'objets trouvés par semaine
 result = df.groupby(['year', 'week', 'type']).count()['gare'].rename('nombre_objets')
 result = result.to_frame()
 result = result.reset_index()

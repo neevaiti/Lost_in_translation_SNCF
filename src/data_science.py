@@ -10,10 +10,11 @@ query_temperature = "SELECT * FROM temperature"
 df_objets_trouves = pd.read_sql_query(query_objets_trouves, conn)
 df_temperature = pd.read_sql_query(query_temperature, conn)
 
+
 df_objets_trouves['date'] = df_objets_trouves['date'].apply(lambda x: pd.to_datetime(x).date() if pd.notnull(x) else x)
 df_temperature['date'] = df_temperature['date'].apply(lambda x: pd.to_datetime(x).date() if pd.notnull(x) else x)
 
-df_objets_trouves=df_objets_trouves.groupby(['date']).count()['gare'].rename('nombre_objets').to_frame().reset_index()
+df_objets_trouves = df_objets_trouves.groupby(['date']).count()['gare'].rename('nombre_objets').to_frame().reset_index()
 
 df = pd.merge(df_objets_trouves, df_temperature, on='date')
 

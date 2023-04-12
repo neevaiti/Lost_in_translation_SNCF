@@ -11,7 +11,8 @@ from streamlit_folium import folium_static
 
 
 def scatterplot():
-    # Charger les données des objets trouvés et des gares depuis la base de données SQLite
+    """Afficher un scatterplot avec la température et le nombre d'objets trouvés"""
+    
     conn = sqlite3.connect('../objets_trouves.db')
     query_objets_trouves = "SELECT * FROM objets_trouves"
     query_temperature = "SELECT * FROM temperature"
@@ -33,6 +34,8 @@ def scatterplot():
     st.plotly_chart(fig)
 
 def histogram():
+    """Afficher un histogramme avec le nombre d'objets trouvés par semaine"""
+    
     conn = sqlite3.connect('../objets_trouves.db')
     query = "SELECT * FROM objets_trouves"
     df = pd.read_sql_query(query, conn)
@@ -65,6 +68,8 @@ def histogram():
     conn.close()
 
 def map():
+    """Afficher une carte avec les gares et les objets trouvés"""
+    
     # Connexion à la base de données
     connexion = sqlite3.connect("../objets_trouves.db")
     liste_types = pd.read_sql_query("""
@@ -79,6 +84,8 @@ def map():
     selected_object = st.selectbox("Sélectionnez un type d'objet", liste_types)
 
     def requete(selected_year, selected_object):
+        """Requête SQL pour récupérer les données des gares et des objets trouvés"""
+        
         if selected_object == "Tous":
             df = pd.read_sql_query(f"""SELECT gare, latitude, longitude, COUNT (*) AS nb_total_objets,
                                             SUM(frequentation_{selected_year}) AS frequentation_gare
@@ -99,6 +106,8 @@ def map():
 
 
     def get_color(frequentation):
+        """Fonction qui retourne la couleur en fonction de la fréquentation de la gare"""
+        
         df = requete(selected_year, selected_object)
         if frequentation < np.percentile(df['frequentation_gare'],25):
             return "green"
@@ -110,6 +119,8 @@ def map():
             return "red"
 
     def show_map(df):
+        """Fonction qui affiche la carte"""
+        
         carte = folium.Map(location=[48.864716, 2.349014], zoom_start=12)
 
         # Calculer l'échelle pour la taille des icônes
@@ -153,6 +164,8 @@ def map():
 
 
 def main():
+    """Fonction principale du script Streamlit"""
+    
     st.set_page_config(page_title='Brief SNCF - Lost in translation', page_icon=':bar_chart:')
     st.title('Brief SNCF - Lost in translation')
 

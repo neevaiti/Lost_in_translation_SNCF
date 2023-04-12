@@ -10,6 +10,7 @@ from streamlit_folium import folium_static
 connexion = sqlite3.connect("../objets_trouves.db")
 
 def requete(selected_year, selected_object):
+    """Requête SQL pour récupérer les données des gares et des objets trouvés"""
     if selected_object == "Tous":
         df = pd.read_sql_query(f"""SELECT gare, latitude, longitude, COUNT (*) AS nb_total_objets,
                                         SUM(frequentation_{selected_year}) AS frequentation_gare
@@ -30,6 +31,7 @@ def requete(selected_year, selected_object):
 
 
 def get_color(frequentation):
+    """Fonction qui retourne la couleur en fonction de la fréquentation de la gare"""
     df = requete(selected_year, selected_object)
     if frequentation < np.percentile(df['frequentation_gare'],25):
         return "green"
@@ -41,6 +43,7 @@ def get_color(frequentation):
         return "red"
 
 def show_map(df):
+    """Fonction qui affiche la carte"""
     carte = folium.Map(location=[48.864716, 2.349014], zoom_start=12)
 
     # Calculer l'échelle pour la taille des icônes
