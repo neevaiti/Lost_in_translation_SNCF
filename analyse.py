@@ -4,7 +4,7 @@ import plotly.express as px
 import sqlite3
 import streamlit as st
 
-conn = sqlite3.connect('objets_trouves.db')
+conn = sqlite3.connect('../objets_trouves.db')
 query = "SELECT * FROM objets_trouves"
 df = pd.read_sql_query(query, conn)
 
@@ -30,9 +30,6 @@ fig.update_yaxes(title_text='Nombre d\'objets')
 fig.update_layout(height=1000)
 
 # Afficher la figure
-fig.show()
-
-
 st.plotly_chart(fig)
 
 
