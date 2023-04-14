@@ -25,7 +25,7 @@ for year in range(2019, 2023):
     
     for gare in gares:
         # Construction de l'URL de l'API pour récupérer les données des objets trouvés pour une gare donnée et une année donnée
-        url = f"https://ressources.data.sncf.com/api/records/1.0/search/?dataset=objets-trouves-restitution&q=gc_obo_gare_origine_r_name+%3D+%22{gare}%22+AND+date%3E%3D%22{start_date}%22+AND+date%3C%3D%22{end_date}%22&sort=date&facet=date&facet=gc_obo_date_heure_restitution_c&facet=gc_obo_gare_origine_r_name&facet=gc_obo_nature_c&facet=gc_obo_type_c&facet=gc_obo_nom_recordtype_sc_c&timezone=Europe%2FParis&rows=-1"
+        url = f"https://ressources.data.sncf.com/api/records/1.0/search/?dataset=objets-trouves-restitution&q=gc_obo_gare_origine_r_name+%3D+%22%7Bgare%7D%22+AND+date%3E%3D%22%7Bstart_date%7D%22+AND+date%3C%3D%22%7Bend_date%7D%22&sort=date&facet=date&facet=gc_obo_date_heure_restitution_c&facet=gc_obo_gare_origine_r_name&facet=gc_obo_nature_c&facet=gc_obo_type_c&facet=gc_obo_nom_recordtype_sc_c&timezone=Europe%2FParis&rows=-1"
         
         # Envoi d'une requête à l'API et traitement de la réponse
         response = requests.get(url)
@@ -48,3 +48,4 @@ for year in range(2019, 2023):
 # Enregistrement des changements dans la base de données et fermeture de la connexion
 conn.commit()
 conn.close()
+

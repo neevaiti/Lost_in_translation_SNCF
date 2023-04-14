@@ -5,6 +5,8 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 from streamlit_folium import folium_static
@@ -13,7 +15,7 @@ from streamlit_folium import folium_static
 def scatterplot():
     """Afficher un scatterplot avec la température et le nombre d'objets trouvés"""
     
-    conn = sqlite3.connect('../objets_trouves.db')
+    conn = sqlite3.connect('objets_trouves.db')
     query_objets_trouves = "SELECT * FROM objets_trouves"
     query_temperature = "SELECT * FROM temperature"
     df_objets_trouves = pd.read_sql_query(query_objets_trouves, conn)
@@ -33,10 +35,13 @@ def scatterplot():
     # Affichage du graphique avec Streamlit
     st.plotly_chart(fig)
 
+
+
+
 def histogram():
     """Afficher un histogramme avec le nombre d'objets trouvés par semaine"""
     
-    conn = sqlite3.connect('../objets_trouves.db')
+    conn = sqlite3.connect('objets_trouves.db')
     query = "SELECT * FROM objets_trouves"
     df = pd.read_sql_query(query, conn)
 
@@ -67,11 +72,114 @@ def histogram():
 
     conn.close()
 
+
+ 
+import sqlite3
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import streamlit as st
+
+def boxplot_number_objects_per_season():
+    def get_season(month):
+        if month in [12, 1, 2]:
+            return "hiver"
+        elif month in [3, 4, 5]:
+            return "printemps"
+        elif month in [6, 7, 8]:
+            return "été"
+        else:
+            return "automne"
+    
+    conn = sqlite3.connect('objets_trouves.db')
+    query_objets_trouves = "SELECT * FROM objets_trouves"
+    df = pd.read_sql_query(query_objets_trouves, conn)
+
+    df['date'] = df['date'].apply(lambda x: pd.to_datetime(x).date() if pd.notnull(x) else x)
+    df = df.groupby(['date']).count()['gare'].rename('nombre_objets').to_frame().reset_index()
+
+    # Convertir la colonne 'date' en type datetime et ajouter une colonne pour la saison
+    df["saison"] = pd.to_datetime(df["date"]).dt.month.apply(get_season)
+    df['année'] = pd.DatetimeIndex(df['date']).year
+
+    def plot_box(df, year):
+        sub_df = df[df['année'] == year]
+        # Création d'un box plot pour chaque saison
+        fig, ax = plt.subplots()
+        sns.boxplot(x='saison', y='nombre_objets', data=sub_df)
+        plt.title(f'Boxplot par saison pour {year}')
+        st.pyplot(fig)
+        
+    # Création du sélecteur d'année
+    year = st.selectbox('Sélectionnez une année', df['année'].unique())
+
+    # Appel de la fonction plot_box avec l'année sélectionnée
+    plot_box(df, year)
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+
+
+
+import sqlite3
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import streamlit as st
+
+def barplot_type_season():
+    
+    def get_season(month):
+        if month in [12, 1, 2]:
+            return "hiver"
+        elif month in [3, 4, 5]:
+            return "printemps"
+        elif month in [6, 7, 8]:
+            return "été"
+        else:
+            return "automne"
+    
+    # Charger les données depuis la base de données SQLite   
+    conn = sqlite3.connect('objets_trouves.db')
+    query_objets_trouves = "SELECT * FROM objets_trouves"
+    df = pd.read_sql_query(query_objets_trouves, conn)
+
+    df['date'] = df['date'].apply(lambda x: pd.to_datetime(x).date() if pd.notnull(x) else x)
+    df = df.groupby(['date']).count()['gare'].rename('nombre_objets').to_frame().reset_index()
+
+    # Convertir la colonne 'date' en type datetime et ajouter une colonne pour la saison
+    df["saison"] = pd.to_datetime(df["date"]).dt.month.apply(get_season)
+    df['année'] = pd.DatetimeIndex(df['date']).year
+    query_objets_trouves = "SELECT * FROM objets_trouves"
+    df_objets_trouves = pd.read_sql_query(query_objets_trouves, conn)
+    df_objets_trouves['date'] = df_objets_trouves['date'].apply(lambda x: pd.to_datetime(x).date())
+    df = pd.merge(df_objets_trouves, df, on='date')
+
+    # Création d'un sous-ensemble de données pour chaque année
+    def plot_bar(df, year, object_type):
+        sub_df = df[(df['année'] == year) & (df['type'] == object_type)]
+
+        # Création d'un countplot pour chaque saison
+        fig, ax = plt.subplots()
+        sns.countplot(x='saison', data=sub_df, ax=ax)
+        ax.set_title(f"Nombre d'objets trouvés de type '{object_type}' en {year} par saison")
+
+        st.pyplot(fig)
+
+    # Créer une liste de toutes les années et tous les types d'objets disponibles dans le dataframe
+    annees = sorted(df['année'].unique())
+    types_objets = sorted(df['type'].unique())
+
+    # Sélecteur de l'année et du type d'objet
+    year_selected = st.selectbox("Sélectionner une année :", options=annees)
+    object_selected = st.selectbox("Sélectionner un type d'objet :", options=types_objets)
+    
+    plot_bar(df, year_selected, object_selected)
+
+
 def map():
     """Afficher une carte avec les gares et les objets trouvés"""
     
     # Connexion à la base de données
-    connexion = sqlite3.connect("../objets_trouves.db")
+    connexion = sqlite3.connect('objets_trouves.db')
     liste_types = pd.read_sql_query("""
         SELECT DISTINCT type 
         FROM objets_trouves
@@ -163,19 +271,27 @@ def map():
         
 
 
+
+
+
+
 def main():
     """Fonction principale du script Streamlit"""
     
     st.set_page_config(page_title='Brief SNCF - Lost in translation', page_icon=':bar_chart:')
     st.title('Brief SNCF - Lost in translation')
 
-    tabs = ['Nombre d’objets trouvés en fonction de la température - Scatterplot', 'Somme du nombre d’objets trouvés par semaine - Histogramme', 'Carte de Paris avec le nombre d’objets trouvés en fonction de la fréquentation de voyageur de chaque gare - Carte']
+    tabs = ['Nombre d’objets trouvés en fonction de la température - Scatterplot', 'Somme du nombre d’objets trouvés par semaine - Histogramme', 'Carte de Paris avec le nombre d’objets trouvés en fonction de la fréquentation de voyageur de chaque gare - Carte', "Nombre d'objets trouvés en fonction de la saison et de l'année - Boxplot", "Nombre d\'objets trouvés par saison, par type et par année - Barplot"]
     selected_tab = st.radio('Sélectionner un type de graphique', tabs)
 
     if selected_tab == 'Nombre d’objets trouvés en fonction de la température - Scatterplot':
         scatterplot()
     elif selected_tab == 'Somme du nombre d’objets trouvés par semaine - Histogramme':
         histogram()
+    elif selected_tab == "Nombre d'objets trouvés en fonction de la saison et de l'année - Boxplot":
+        boxplot_number_objects_per_season()
+    elif selected_tab == "Nombre d\'objets trouvés par saison, par type et par année - Barplot":
+        barplot_type_season()
     elif selected_tab == 'Carte de Paris avec le nombre d’objets trouvés en fonction de la fréquentation de voyageur de chaque gare - Carte':
         map()
 
