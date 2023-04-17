@@ -281,7 +281,7 @@ def main():
     st.set_page_config(page_title='Brief SNCF - Lost in translation', page_icon=':bar_chart:')
     st.title('Brief SNCF - Lost in translation')
 
-    tabs = ['Nombre d’objets trouvés en fonction de la température - Scatterplot', 'Somme du nombre d’objets trouvés par semaine - Histogramme', 'Carte de Paris avec le nombre d’objets trouvés en fonction de la fréquentation de voyageur de chaque gare - Carte', "Nombre d'objets trouvés en fonction de la saison et de l'année - Boxplot", "Nombre d\'objets trouvés par saison, par type et par année - Barplot"]
+    tabs = ['Nombre d’objets trouvés en fonction de la température - Scatterplot', 'Somme du nombre d’objets trouvés par semaine - Histogramme', 'Carte de Paris avec le nombre d’objets trouvés en fonction de la fréquentation de voyageur de chaque gare - Carte', "Nombre d'objets trouvés en fonction de la saison et de l'année - Boxplot", "Nombre d\'objets trouvés par saison, par type et par année - Barplot", "Réponses aux questions/Analyse"]
     selected_tab = st.radio('Sélectionner un type de graphique', tabs)
 
     if selected_tab == 'Nombre d’objets trouvés en fonction de la température - Scatterplot':
@@ -294,6 +294,16 @@ def main():
         barplot_type_season()
     elif selected_tab == 'Carte de Paris avec le nombre d’objets trouvés en fonction de la fréquentation de voyageur de chaque gare - Carte':
         map()
+    elif selected_tab == "Réponses aux questions/Analyse":
+        st.write("**Est ce que le nombre d’objets perdus est corrélé à la temperature d'après le scatterplot?**")
+        st.write("Non, le nombre d'objets trouvés ne semble pas corrélé à la temperature selon ce graphique.")
+        st.write(" ")
+        st.write("**Quelle est la médiane du nombre d’objets trouvés en fonction de la saison? Il y a t il une correlation entre ces deux variables d'après le graphique?**")
+        st.write("En ce qui concerne la corrélation entre ces deux variables, le graphique montre une légère tendance à une plus grande quantité d'objets trouvés en automne et en été, tandis que les quantités trouvées en hiver et au printemps sont plus faibles. Cependant, il n'y a pas de forte corrélation entre la saison et le nombre d'objets trouvés, car la variance des nombres d'objets trouvés à travers les différentes saisons est assez importante. Cela peut également être confirmé par le fait que la différence de médiane entre les saisons est relativement faible et très certainement lié à la fréquentation plus qu'à la saison.")
+        st.write(" ")
+        st.write("**Affichez le nombre d'objets trouvés en fonction du type de d'objet et de la saison sur un graphique. Il y a t il une correlation entre ces deux variables d'après le graphique?**")
+        st.write("Oui il y a une petite corrélation entre le type d'objet et la saison, les articles de camping sont le plus oubliés en été par exemple ou encore les lunettes en été également de par la présence des lunettes de soleil.")
+        st.write(" ")
 
 if __name__ == '__main__':
     main()
