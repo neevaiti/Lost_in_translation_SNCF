@@ -57,7 +57,9 @@ Matplotlib
 
 
 ## Contributeurs
+
 [@AgatheBecquart](https://github.com/AgatheBecquart)
+
 [@neevaiti](https://github.com/neevaiti)
 
 

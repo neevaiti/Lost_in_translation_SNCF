@@ -61,6 +61,9 @@ def update_objets_trouves(start_date, end_date):
     conn.commit()
     conn.close()
 
+# en prévision du bouton data engineer 
 
 update_objets_trouves("2019-01-01", "2022-12-31")
+# update_objets_trouves("2019-01-01", end_date = datetime.today().strftime('%Y-%m-%d'))
+
 

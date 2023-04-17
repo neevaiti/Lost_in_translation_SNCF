@@ -58,6 +58,7 @@ def update_temperature_data(start_date, end_date):
     conn.commit()
     conn.close()
     
+# en prévision du bouton data engineer 
 
 update_temperature_data("2019-01-01", "2022-12-31")
-update_temperature_data("2019-01-01", end_date = datetime.today().strftime('%Y-%m-%d'))
+# update_temperature_data("2019-01-01", end_date = datetime.today().strftime('%Y-%m-%d'))
